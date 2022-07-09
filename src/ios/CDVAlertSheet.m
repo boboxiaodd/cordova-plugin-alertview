@@ -43,14 +43,22 @@
     NSString * text = [options valueForKey:@"text"];
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
     NSArray * action = [options objectForKey:@"list"];
-    [LEEAlert actionsheet].config
-        .LeeTitle(title)
-        .LeeContent(text)
-        .LeeActionSheetBottomMargin(0)
-        .LeeActionSheetHeaderCornerRadii(CornerRadiiMake(0, 0, 0, 0))
-        .LeeActionSheetCancelActionCornerRadii(CornerRadiiMake(0, 0, 0, 0))
-        .LeeAction(cancel, nil)
-        .LeeShow();
+    LEEActionSheetConfig *actionsheet = [LEEAlert actionsheet];
+    actionsheet.config.LeeTitle(title);
+    actionsheet.config.LeeContent(text);
+    for(int i=0;i<action.count;i++){
+        actionsheet.config.LeeAction(action[i], ^{
+            NSLog(@"choose %@",action[i]);
+            [self send_event:command withMessage:@{@"action":action[i]} Alive:NO State:YES];
+        });
+    }
+    actionsheet.config.LeeCancelAction(cancel, nil);
+    actionsheet.config.LeeActionSheetBottomMargin(0.0f);
+    actionsheet.config.LeeActionSheetCancelActionSpaceColor([UIColor colorWithWhite:0.92 alpha:1.0f]);
+    actionsheet.config.LeeActionSheetBackgroundColor([UIColor whiteColor]); // 通过设置背景颜色来填充底部间隙
+    actionsheet.config.LeeMaxWidth([UIScreen mainScreen].bounds.size.width);
+    actionsheet.config.LeeCornerRadius(0.0f);
+    actionsheet.config.LeeShow();
 }
 
 

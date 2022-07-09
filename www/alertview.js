@@ -1,19 +1,13 @@
 const exec = require('cordova/exec');
 const CDVAlertSheet = {
-    createChatBar:function (success,option){
-        exec(success,null,'CDVInputBar','createChatBar',[option]);
+    alert:function (success,option){
+        exec(success,null,'CDVAlertSheet','alert',[option]);
     },
-    change_textField_placeholder:function (option) {
-        exec(null,null,'CDVInputBar','change_textField_placeholder',[option]);
+    confirm:function (success,fail,option) {
+        exec(success,fail,'CDVAlertSheet','confirm',[option]);
     },
-    resetChatBar:function (){
-        exec(null,null,'CDVInputBar','resetChatBar',[]);
-    },
-    closeChatBar:function (){
-        exec(null,null,'CDVInputBar','closeChatBar',[]);
-    },
-    showInputBar:function (success,option){
-        exec(success,null,'CDVInputBar','showInputBar',[option]);
+    actionsheet:function (success,option){
+        exec(success,null,'CDVAlertSheet','actionsheet',[option]);
     }
 };
 module.exports = CDVAlertSheet;
