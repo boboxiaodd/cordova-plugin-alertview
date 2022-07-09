@@ -16,9 +16,18 @@
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
-    [LEEAlert alert].config.LeeTitle(title).LeeContent(text).LeeCancelAction(done, ^{
-        [self send_event:command withMessage:@{@"type":@"alert",@"action":@"done"} Alive:NO State:YES];
-    }).LeeCornerRadius(radius).LeeShow();
+    int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
+    [LEEAlert alert].config
+        .LeeTitle(title)
+        .LeeAddContent(^(UILabel * _Nonnull label) {
+            label.text = text;
+            label.textAlignment = NSTextAlignmentLeft;
+            label.font = [UIFont systemFontOfSize:fontsize];
+        })
+        .LeeCancelAction(done, ^{
+            [self send_event:command withMessage:@{@"type":@"alert",@"action":@"done"} Alive:NO State:YES];
+        })
+        .LeeCornerRadius(radius).LeeShow();
 }
 -(void)confirm:(CDVInvokedUrlCommand *)command
 {
@@ -28,14 +37,19 @@
     NSString * done = [options valueForKey:@"done"]  ?: @"确定";
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
+    int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
     [LEEAlert alert].config
         .LeeTitle(title)
-        .LeeContent(text)
-        .LeeCancelAction(cancel, ^{
-            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
+        .LeeAddContent(^(UILabel * _Nonnull label) {
+            label.text = text;
+            label.textAlignment = NSTextAlignmentLeft;
+            label.font = [UIFont systemFontOfSize:fontsize];
         })
         .LeeAction(done, ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
+        })
+        .LeeCancelAction(cancel, ^{
+            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
         })
         .LeeCornerRadius(radius)
         .LeeShow();
