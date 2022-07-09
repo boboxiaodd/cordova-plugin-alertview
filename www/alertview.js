@@ -1,5 +1,5 @@
 const exec = require('cordova/exec');
-const CDVInputBar = {
+const CDVAlertView = {
     createChatBar:function (success,option){
         exec(success,null,'CDVInputBar','createChatBar',[option]);
     },
@@ -16,4 +16,4 @@ const CDVInputBar = {
         exec(success,null,'CDVInputBar','showInputBar',[option]);
     }
 };
-module.exports = CDVInputBar;
+module.exports = CDVAlertView;
