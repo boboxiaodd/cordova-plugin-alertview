@@ -15,9 +15,10 @@
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
+    int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     [LEEAlert alert].config.LeeTitle(title).LeeContent(text).LeeCancelAction(done, ^{
         [self send_event:command withMessage:@{@"type":@"alert",@"action":@"done"} Alive:NO State:YES];
-    }).LeeShow();
+    }).LeeCornerRadius(radius).LeeShow();
 }
 -(void)confirm:(CDVInvokedUrlCommand *)command
 {
@@ -26,15 +27,18 @@
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"]  ?: @"确定";
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
+    int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     [LEEAlert alert].config
         .LeeTitle(title)
         .LeeContent(text)
+        .LeeCancelAction(cancel, ^{
+            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
+        })
         .LeeAction(done, ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
         })
-        .LeeCancelAction(cancel, ^{
-            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
-        }).LeeShow();
+        .LeeCornerRadius(radius)
+        .LeeShow();
 }
 -(void)actionsheet:(CDVInvokedUrlCommand *)command
 {
@@ -43,6 +47,7 @@
     NSString * text = [options valueForKey:@"text"];
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
     NSArray * action = [options objectForKey:@"list"];
+    int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     LEEActionSheetConfig *actionsheet = [LEEAlert actionsheet];
     actionsheet.config.LeeTitle(title);
     actionsheet.config.LeeContent(text);
@@ -57,7 +62,7 @@
     actionsheet.config.LeeActionSheetCancelActionSpaceColor([UIColor colorWithWhite:0.92 alpha:1.0f]);
     actionsheet.config.LeeActionSheetBackgroundColor([UIColor whiteColor]); // 通过设置背景颜色来填充底部间隙
     actionsheet.config.LeeMaxWidth([UIScreen mainScreen].bounds.size.width);
-    actionsheet.config.LeeCornerRadius(0.0f);
+    actionsheet.config.LeeCornerRadius(radius);
     actionsheet.config.LeeShow();
 }
 
