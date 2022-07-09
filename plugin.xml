@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="cordova-plugin-alertview" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
-    <name>CDVAlertView</name>
-    <js-module name="CDVAlertView" src="www/alertview.js">
-        <clobbers target="CDVAlertView" />
+    <name>CDVAlertSheet</name>
+    <js-module name="CDVAlertSheet" src="www/alertview.js">
+        <clobbers target="CDVAlertSheet" />
     </js-module>
     <platform name="ios">
         <config-file parent="/*" target="config.xml">
-            <feature name="CDVAlertView">
-                <param name="ios-package" value="CDVAlertView" />
+            <feature name="CDVAlertSheet">
+                <param name="ios-package" value="CDVAlertSheet" />
                 <param name="onload" value="true" />
             </feature>
         </config-file>
-        <header-file src="src/ios/CDVAlertView.h" />
-        <source-file src="src/ios/CDVAlertView.m" />
+        <header-file src="src/ios/CDVAlertSheet.h" />
+        <source-file src="src/ios/CDVAlertSheet.m" />
         <podspec>
             <config>
                 <source url="https://github.com/CocoaPods/Specs.git"/>
