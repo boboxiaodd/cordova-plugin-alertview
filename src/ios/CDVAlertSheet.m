@@ -17,11 +17,12 @@
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
+    BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
     [LEEAlert alert].config
         .LeeTitle(title)
         .LeeAddContent(^(UILabel * _Nonnull label) {
             label.text = text;
-            label.textAlignment = NSTextAlignmentLeft;
+            label.textAlignment = is_center ? NSTextAlignmentCenter : NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:fontsize];
         })
         .LeeCancelAction(done, ^{
@@ -38,11 +39,12 @@
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
+    BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
     [LEEAlert alert].config
         .LeeTitle(title)
         .LeeAddContent(^(UILabel * _Nonnull label) {
             label.text = text;
-            label.textAlignment = NSTextAlignmentLeft;
+            label.textAlignment = is_center ? NSTextAlignmentCenter : NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:fontsize];
         })
         .LeeCancelAction(cancel, ^{
