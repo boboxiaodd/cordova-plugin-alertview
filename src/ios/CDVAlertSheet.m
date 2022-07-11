@@ -45,11 +45,11 @@
             label.textAlignment = NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:fontsize];
         })
-        .LeeAction(done, ^{
-            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
-        })
         .LeeCancelAction(cancel, ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
+        })
+        .LeeAction(done, ^{
+            [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
         })
         .LeeCornerRadius(radius)
         .LeeShow();
