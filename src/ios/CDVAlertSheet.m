@@ -18,17 +18,25 @@
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
     BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
-    [LEEAlert alert].config
-        .LeeTitle(title)
-        .LeeAddContent(^(UILabel * _Nonnull label) {
+    LEEAlertConfig *actionsheet = [LEEAlert alert];
+    if (@available(iOS 13.0, *)) {
+        actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
+    }
+    actionsheet.config.LeeTitle(title);
+    actionsheet.config.LeeAddContent(^(UILabel * _Nonnull label) {
             label.text = text;
             label.textAlignment = is_center ? NSTextAlignmentCenter : NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:fontsize];
-        })
-        .LeeCancelAction(done, ^{
+    });
+    actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
+        action.title = done;
+        action.titleColor = [UIColor grayColor];
+        action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"alert",@"action":@"done"} Alive:NO State:YES];
-        })
-        .LeeCornerRadius(radius).LeeShow();
+        };
+    });
+    actionsheet.config.LeeCornerRadius(radius);
+    actionsheet.config.LeeShow();
 }
 -(void)confirm:(CDVInvokedUrlCommand *)command
 {
@@ -40,21 +48,32 @@
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
     BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
-    [LEEAlert alert].config
-        .LeeTitle(title)
-        .LeeAddContent(^(UILabel * _Nonnull label) {
+    LEEAlertConfig *actionsheet = [LEEAlert alert];
+    if (@available(iOS 13.0, *)) {
+        actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
+    }
+    actionsheet.config.LeeTitle(title);
+    actionsheet.config.LeeAddContent(^(UILabel * _Nonnull label) {
             label.text = text;
             label.textAlignment = is_center ? NSTextAlignmentCenter : NSTextAlignmentLeft;
             label.font = [UIFont systemFontOfSize:fontsize];
-        })
-        .LeeCancelAction(cancel, ^{
+    });
+    actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
+        action.title = cancel;
+        action.titleColor = [UIColor grayColor];
+        action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
-        })
-        .LeeAction(done, ^{
+        };
+    });
+    actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
+        action.title = done;
+        action.titleColor = [UIColor blackColor];
+        action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
-        })
-        .LeeCornerRadius(radius)
-        .LeeShow();
+        };
+    });
+    actionsheet.config.LeeCornerRadius(radius);
+    actionsheet.config.LeeShow();
 }
 -(void)actionsheet:(CDVInvokedUrlCommand *)command
 {
@@ -62,18 +81,27 @@
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
-    NSArray * action = [options objectForKey:@"list"];
+    NSArray * actionlist = [options objectForKey:@"list"];
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     LEEActionSheetConfig *actionsheet = [LEEAlert actionsheet];
+    if (@available(iOS 13.0, *)) {
+        actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
+    }
     actionsheet.config.LeeTitle(title);
     actionsheet.config.LeeContent(text);
-    for(int i=0;i<action.count;i++){
-        actionsheet.config.LeeAction(action[i], ^{
-            NSLog(@"choose %@",action[i]);
-            [self send_event:command withMessage:@{@"action":action[i]} Alive:NO State:YES];
+    for(int i=0;i<actionlist.count;i++){
+        actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
+            action.title = actionlist[i];
+            action.titleColor = [UIColor grayColor];
+            action.clickBlock = ^{
+                [self send_event:command withMessage:@{@"action":actionlist[i]} Alive:NO State:YES];
+            };
         });
     }
-    actionsheet.config.LeeCancelAction(cancel, nil);
+    actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
+        action.title = cancel;
+        action.titleColor = [UIColor blackColor];
+    });
     actionsheet.config.LeeActionSheetBottomMargin(0.0f);
     actionsheet.config.LeeActionSheetCancelActionSpaceColor([UIColor colorWithWhite:0.92 alpha:1.0f]);
     actionsheet.config.LeeActionSheetBackgroundColor([UIColor whiteColor]); // 通过设置背景颜色来填充底部间隙
