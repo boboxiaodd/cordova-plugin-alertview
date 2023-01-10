@@ -1,7 +1,7 @@
 #import <Cordova/CDV.h>
 #import "CDVAlertSheet.h"
 #import <LEEAlert/LEEAlert.h>
-
+#import "UIColor+BBVoiceRecord.h"
 
 @interface CDVAlertSheet ()
 
@@ -18,6 +18,9 @@
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
     BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
+    int animation_open = [[options valueForKey:@"animation_open"] intValue] ?: 8;
+    int animation_close = [[options valueForKey:@"animation_close"] intValue] ?: 16;
+
     LEEAlertConfig *actionsheet = [LEEAlert alert];
     if (@available(iOS 13.0, *)) {
         actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
@@ -30,11 +33,13 @@
     });
     actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
         action.title = done;
-        action.titleColor = [UIColor grayColor];
+        action.titleColor = [UIColor colorWithHex:0x23282C]; //#23282C
         action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"alert",@"action":@"done"} Alive:NO State:YES];
         };
     });
+    actionsheet.config.LeeOpenAnimationStyle(animation_open);
+    actionsheet.config.LeeCloseAnimationStyle(animation_close);
     actionsheet.config.LeeCornerRadius(radius);
     actionsheet.config.LeeShow();
 }
@@ -48,6 +53,8 @@
     int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
     int fontsize = [[options valueForKey:@"fontsize"] intValue] ?: 14;
     BOOL is_center =  [[options valueForKey:@"center"] boolValue] || NO;
+    int animation_open = [[options valueForKey:@"animation_open"] intValue] ?: 8;
+    int animation_close = [[options valueForKey:@"animation_close"] intValue] ?: 16;
     LEEAlertConfig *actionsheet = [LEEAlert alert];
     if (@available(iOS 13.0, *)) {
         actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
@@ -60,18 +67,20 @@
     });
     actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
         action.title = cancel;
-        action.titleColor = [UIColor grayColor];
+        action.titleColor = [UIColor colorWithHex:0x23282C];
         action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
         };
     });
     actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
         action.title = done;
-        action.titleColor = [UIColor blackColor];
+        action.titleColor = [UIColor colorWithHex:0x23282C];
         action.clickBlock = ^{
             [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
         };
     });
+    actionsheet.config.LeeOpenAnimationStyle(animation_open);
+    actionsheet.config.LeeCloseAnimationStyle(animation_close);
     actionsheet.config.LeeCornerRadius(radius);
     actionsheet.config.LeeShow();
 }
@@ -82,17 +91,19 @@
     NSString * text = [options valueForKey:@"text"];
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
     NSArray * actionlist = [options objectForKey:@"list"];
-    int radius = [[options valueForKey:@"raidus"] intValue] ?: 5;
+    int radius = [[options valueForKey:@"raidus"] intValue] ?: 0;
     LEEActionSheetConfig *actionsheet = [LEEAlert actionsheet];
     if (@available(iOS 13.0, *)) {
         actionsheet.config.LeeUserInterfaceStyle(UIUserInterfaceStyleLight);
     }
     actionsheet.config.LeeTitle(title);
-    actionsheet.config.LeeContent(text);
+    if(text){
+        actionsheet.config.LeeContent(text);
+    }
     for(int i=0;i<actionlist.count;i++){
         actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
             action.title = actionlist[i];
-            action.titleColor = [UIColor grayColor];
+            action.titleColor = [UIColor blackColor];
             action.clickBlock = ^{
                 [self send_event:command withMessage:@{@"action":actionlist[i]} Alive:NO State:YES];
             };
@@ -100,7 +111,7 @@
     }
     actionsheet.config.LeeAddAction(^(LEEAction * _Nonnull action) {
         action.title = cancel;
-        action.titleColor = [UIColor blackColor];
+        action.titleColor = [UIColor redColor];
     });
     actionsheet.config.LeeActionSheetBottomMargin(0.0f);
     actionsheet.config.LeeActionSheetCancelActionSpaceColor([UIColor colorWithWhite:0.92 alpha:1.0f]);
