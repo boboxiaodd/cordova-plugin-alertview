@@ -19,6 +19,7 @@
             </config>
             <pods use-frameworks="true">
                 <pod name="SCLAlertView-Objective-C" />
+                <pod name="LEEAlert" />
             </pods>
         </podspec>
 
