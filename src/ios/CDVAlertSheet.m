@@ -10,8 +10,9 @@
 
 @implementation CDVAlertSheet
 
--(void)alert_scl:(NSDictionary *)options withCommand:(CDVInvokedUrlCommand *)command
+-(void)alert_scl:(CDVInvokedUrlCommand *)command
 {
+    NSDictionary *options = [command.arguments objectAtIndex: 0];
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
@@ -30,8 +31,9 @@
     [alert showInfo: title subTitle: text closeButtonTitle: nil duration:0.0f];
 }
 
--(void)confirm_scl:(NSDictionary *)options withCommand:(CDVInvokedUrlCommand *)command
+-(void)confirm_scl:(CDVInvokedUrlCommand *)command
 {
+    NSDictionary *options = [command.arguments objectAtIndex: 0];
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"]  ?: @"确定";
@@ -69,8 +71,9 @@
     [alert showQuestion:title subTitle:text closeButtonTitle: nil duration:0.0f];
 }
 
--(void)showLoadding:(NSDictionary *)options
+-(void)showLoadding:(CDVInvokedUrlCommand *)command
 {
+    NSDictionary *options = [command.arguments objectAtIndex: 0];
     NSString * text = [options valueForKey:@"text"];
     _loadding = [[SCLAlertView alloc] initWithNewWindow];
     _loadding.showAnimationType = SCLAlertViewShowAnimationFadeIn;
@@ -78,25 +81,16 @@
     [_loadding showWaiting:text subTitle:nil closeButtonTitle:nil duration:5.0f];
 }
 
+-(void)hideLoadding:(CDVInvokedUrlCommand *)command
+{
+    if(_loadding){
+        [_loadding hideView];
+    }
+}
 
 -(void)alert:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *options = [command.arguments objectAtIndex: 0];
-    if(options[@"useSCL"] != nil){
-        [self alert_scl:options withCommand:command];
-        return;
-    }
-    if(options[@"useShowLoadding"] != nil){
-        [self showLoadding:options];
-        return;
-    }
-    if(options[@"useHideLoadding"] != nil){
-        if(_loadding){
-            [_loadding hideView];
-        }
-        return;
-    }
-    
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
@@ -131,11 +125,6 @@
 -(void)confirm:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *options = [command.arguments objectAtIndex: 0];
-    if(options[@"useSCL"] != nil){
-        [self confirm_scl:options withCommand: command];
-        return;
-    }
-    
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"]  ?: @"确定";
