@@ -17,7 +17,7 @@ const CDVAlertSheet = {
     },
     hideLoadding:function(){
         exec(null,null,'CDVAlertSheet','hideLoadding',[]);
-    }
+    },
     actionsheet:function (success,option){
         exec(success,null,'CDVAlertSheet','actionsheet',[option]);
     }
