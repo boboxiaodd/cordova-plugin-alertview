@@ -5,7 +5,7 @@
 #import "SCLAlertView.h"
 
 @interface CDVAlertSheet ()
-
+    @property (nonatomic,strong)SCLAlertView *loadding;
 @end
 
 @implementation CDVAlertSheet
@@ -17,7 +17,7 @@
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
     int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
     int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
-    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.8];
+    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.73];
     SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
         [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
     }];
@@ -42,20 +42,12 @@
     
     
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
-    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.8];
-    SCLButton *cancelBtn = [alert addButton: cancel actionBlock:^(void) {
-        [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
-    }];
-    cancelBtn.buttonFormatBlock = ^NSDictionary *{
-        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
-        buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: cancel_bg_color];
-        buttonConfig[@"textColor"] = [UIColor colorWithHex: cancel_text_color];
-        return buttonConfig;
-    };
+    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.73];
     
     SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
         [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
     }];
+    doneBtn.titleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
     doneBtn.buttonFormatBlock = ^NSDictionary *{
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
         buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: done_bg_color];
@@ -63,7 +55,27 @@
         return buttonConfig;
     };
     
+    SCLButton *cancelBtn = [alert addButton: cancel actionBlock:^(void) {
+        [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
+    }];
+    cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
+    cancelBtn.buttonFormatBlock = ^NSDictionary *{
+        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
+        buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: cancel_bg_color];
+        buttonConfig[@"textColor"] = [UIColor colorWithHex: cancel_text_color];
+        return buttonConfig;
+    };
+    
     [alert showQuestion:title subTitle:text closeButtonTitle: nil duration:0.0f];
+}
+
+-(void)showLoadding:(NSDictionary *)options
+{
+    NSString * text = [options valueForKey:@"text"];
+    _loadding = [[SCLAlertView alloc] initWithNewWindow];
+    _loadding.showAnimationType = SCLAlertViewShowAnimationFadeIn;
+    _loadding.hideAnimationType = SCLAlertViewHideAnimationFadeOut;
+    [_loadding showWaiting:text subTitle:nil closeButtonTitle:nil duration:5.0f];
 }
 
 
@@ -74,7 +86,16 @@
         [self alert_scl:options withCommand:command];
         return;
     }
-    
+    if(options[@"useShowLoadding"] != nil){
+        [self showLoadding:options];
+        return;
+    }
+    if(options[@"useHideLoadding"] != nil){
+        if(_loadding){
+            [_loadding hideView];
+        }
+        return;
+    }
     
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
