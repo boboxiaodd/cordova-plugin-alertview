@@ -2,6 +2,7 @@
 #import "CDVAlertSheet.h"
 #import <LEEAlert/LEEAlert.h>
 #import "UIColor+BBVoiceRecord.h"
+#import "SCLAlertView.h"
 
 @interface CDVAlertSheet ()
 
@@ -9,9 +10,72 @@
 
 @implementation CDVAlertSheet
 
+-(void)alert_scl:(NSDictionary *)options withCommand:(CDVInvokedUrlCommand *)command
+{
+    NSString * title = [options valueForKey:@"title"];
+    NSString * text = [options valueForKey:@"text"];
+    NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
+    int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
+    int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
+    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.8];
+    SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
+        [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
+    }];
+    doneBtn.buttonFormatBlock = ^NSDictionary *{
+        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
+        buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: done_bg_color];
+        buttonConfig[@"textColor"] = [UIColor colorWithHex: done_text_color];
+        return buttonConfig;
+    };
+    [alert showInfo: title subTitle: text closeButtonTitle: nil duration:0.0f];
+}
+
+-(void)confirm_scl:(NSDictionary *)options withCommand:(CDVInvokedUrlCommand *)command
+{
+    NSString * title = [options valueForKey:@"title"];
+    NSString * text = [options valueForKey:@"text"];
+    NSString * done = [options valueForKey:@"done"]  ?: @"确定";
+    int cancel_bg_color = [[options valueForKey:@"cancel_bg_color"] intValue] ?: 0xcccccc;
+    int cancel_text_color = [[options valueForKey:@"cancel_text_color"] intValue] ?: 0x666666;
+    int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
+    int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
+    
+    
+    NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
+    SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.8];
+    SCLButton *cancelBtn = [alert addButton: cancel actionBlock:^(void) {
+        [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
+    }];
+    cancelBtn.buttonFormatBlock = ^NSDictionary *{
+        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
+        buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: cancel_bg_color];
+        buttonConfig[@"textColor"] = [UIColor colorWithHex: cancel_text_color];
+        return buttonConfig;
+    };
+    
+    SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
+        [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
+    }];
+    doneBtn.buttonFormatBlock = ^NSDictionary *{
+        NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
+        buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: done_bg_color];
+        buttonConfig[@"textColor"] = [UIColor colorWithHex: done_text_color];
+        return buttonConfig;
+    };
+    
+    [alert showQuestion:title subTitle:text closeButtonTitle: nil duration:0.0f];
+}
+
+
 -(void)alert:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *options = [command.arguments objectAtIndex: 0];
+    if(options[@"useSCL"] != nil){
+        [self alert_scl:options withCommand:command];
+        return;
+    }
+    
+    
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
@@ -46,6 +110,11 @@
 -(void)confirm:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *options = [command.arguments objectAtIndex: 0];
+    if(options[@"useSCL"] != nil){
+        [self confirm_scl:options withCommand: command];
+        return;
+    }
+    
     NSString * title = [options valueForKey:@"title"];
     NSString * text = [options valueForKey:@"text"];
     NSString * done = [options valueForKey:@"done"]  ?: @"确定";
