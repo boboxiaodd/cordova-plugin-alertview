@@ -1,9 +1,9 @@
 {
-    "name": "alertview",
+    "name": "cordova-plugin-alertview",
     "version": "0.0.1",
     "description": "cordova alertview",
     "cordova": {
-        "id": "alertview",
+        "id": "cordova-plugin-alertview",
         "platforms": [
             "ios"
         ]
