@@ -41,6 +41,7 @@
     int cancel_text_color = [[options valueForKey:@"cancel_text_color"] intValue] ?: 0x666666;
     int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
     int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
+    int style = [[options valueForKey:@"style"] intValue] ?: SCLAlertViewStyleQuestion;
     
     
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
@@ -68,7 +69,7 @@
         return buttonConfig;
     };
     
-    [alert showQuestion:title subTitle:text closeButtonTitle: nil duration:0.0f];
+    [alert showQuestion:title subTitle:text closeButtonTitle: nil duration:0.0f style:style];
 }
 
 -(void)showLoadding:(CDVInvokedUrlCommand *)command
