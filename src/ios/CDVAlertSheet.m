@@ -18,10 +18,11 @@
     NSString * done = [options valueForKey:@"done"] ?: @"确定" ;
     int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
     int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
+    int button_height = [[options valueForKey:@"btn_height"] intValue] ?: 35;
     SCLAlertView *alert = [[SCLAlertView alloc] initWithNewWindowWidth: [UIScreen mainScreen].bounds.size.width * 0.73];
     SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
         [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
-    }];
+    } withHeight:button_height];
     doneBtn.buttonFormatBlock = ^NSDictionary *{
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
         buttonConfig[@"backgroundColor"] = [UIColor colorWithHex: done_bg_color];
@@ -42,6 +43,7 @@
     int done_bg_color = [[options valueForKey:@"done_bg_color"] intValue] ?: 0xcccccc;
     int done_text_color = [[options valueForKey:@"done_text_color"] intValue] ?: 0x111111;
     int style = [[options valueForKey:@"style"] intValue] ?: SCLAlertViewStyleQuestion;
+    int button_height = [[options valueForKey:@"btn_height"] intValue] ?: 35;
     
     
     NSString * cancel = [options valueForKey:@"cancel"] ?: @"取消" ;
@@ -49,7 +51,7 @@
     
     SCLButton *doneBtn = [alert addButton: done actionBlock:^(void) {
         [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"done"} Alive:NO State:YES];
-    }];
+    } withHeight:button_height];
     doneBtn.titleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
     doneBtn.buttonFormatBlock = ^NSDictionary *{
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
@@ -60,7 +62,7 @@
     
     SCLButton *cancelBtn = [alert addButton: cancel actionBlock:^(void) {
         [self send_event:command withMessage:@{@"type":@"confirm",@"action":@"cancel"} Alive:NO State:YES];
-    }];
+    } withHeight:button_height];
     cancelBtn.titleLabel.font = [UIFont systemFontOfSize:14.0f];
     cancelBtn.buttonFormatBlock = ^NSDictionary *{
         NSMutableDictionary *buttonConfig = [[NSMutableDictionary alloc] init];
