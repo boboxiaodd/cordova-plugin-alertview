@@ -19,7 +19,6 @@
             </config>
             <pods use-frameworks="true">
                 <pod name="SCLAlertView-Objective-C" options=":git => 'https://github.com/boboxiaodd/SCLAlertView'" />
-                <pod name="LEEAlert" />
             </pods>
         </podspec>
 
